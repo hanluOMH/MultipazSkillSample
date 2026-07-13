@@ -1,0 +1,74 @@
+---
+name: multipaz
+description: Use this skill for Multipaz, ISO mdoc or mDL, OpenID4VCI, OpenID4VP, DCQL, W3C Digital Credentials API, credential holder, verifier, issuer, QR presentation, BLE presentation, Android NFC credential presentation, Kotlin Multiplatform wallet, or Swift and Compose integration work built on the Multipaz repository or released modules. Apply it when a task needs module selection, version-aware implementation, project inspection, platform integration, troubleshooting, or migration for Multipaz. Do not use it for unrelated Kotlin work. Never claim that Multipaz NFC credential presentation works on iOS.
+---
+
+# Multipaz
+
+Use this skill when the task is about integrating, upgrading, debugging, or validating Multipaz in a Kotlin Multiplatform, Android, iOS, SwiftUI, Compose Multiplatform, server, issuer, holder, or verifier project.
+
+## Rules
+
+- Treat the current repository as the primary source of truth. Prefer current code, tests, samples, and build files over prose documentation.
+- Inspect the target project before editing it. Run `python3 -B scripts/inspect_multipaz_project.py` first unless the task is purely explanatory and already scoped to a known file.
+- Check version compatibility before generating code. Do not silently upgrade Multipaz or unrelated dependencies.
+- Keep Android-only code in `androidMain` or Android app modules. Keep iOS-only code in `iosMain` or native Swift code. Keep shared logic in `commonMain` only when the APIs are actually multiplatform.
+- Multipaz NFC credential presentation is currently Android-only. Never generate iOS NFC presentation code, never claim feature parity, and never tell the user to add iOS NFC entitlements for a Multipaz NFC presentment flow.
+- Prefer minimal dependency changes and reuse project conventions such as version catalogs, convention plugins, included builds, or direct dependency style already present in the target project.
+- Do not invent APIs, Maven coordinates, Gradle modules, package names, or platform requirements.
+- Apply security-sensitive workflows conservatively. Do not hardcode production secrets, commit private keys, disable TLS validation, log complete credentials, or treat parsing success as trust.
+
+## Workflow
+
+1. Inspect the project.
+   Run `python3 -B scripts/inspect_multipaz_project.py [path]` and read [references/project-inspection.md](references/project-inspection.md) plus [references/dependency-guide.md](references/dependency-guide.md).
+2. Classify the work.
+   Decide whether the task is setup, issuance, storage, presentment, verification, verifier request construction, server integration, migration, or troubleshooting.
+3. Load only the relevant references.
+   Use the routing list below instead of loading everything.
+4. Select modules and samples.
+   Match the requested workflow to current repo modules and sample files. Prefer sample-backed implementations.
+5. Respect source-set and platform boundaries.
+   Shared document logic can live in `commonMain`; Android NFC services and manifest wiring must stay Android-specific; iOS wallet or Digital Credentials work must follow the supported Swift or `iosMain` paths.
+6. Implement with validation in mind.
+   Add the smallest necessary dependency and code change, then run `python3 -B scripts/check_multipaz_dependencies.py` and `bash scripts/validate_multipaz_project.sh --dry-run`.
+7. Report completion.
+   State the Multipaz version evidence you used, modules changed, platform capability boundaries, validation run, and any unsupported or deferred work.
+
+## Reference Routing
+
+- Architecture and module map: [references/architecture.md](references/architecture.md)
+- Project inspection and dependency style: [references/project-inspection.md](references/project-inspection.md), [references/dependency-guide.md](references/dependency-guide.md)
+- Credential formats and document modeling: [references/credential-model.md](references/credential-model.md)
+- Issuance and provisioning: [references/credential-issuance.md](references/credential-issuance.md), [references/openid4vci.md](references/openid4vci.md)
+- Presentment: [references/credential-presentation.md](references/credential-presentation.md), [references/proximity-presentation.md](references/proximity-presentation.md), [references/openid4vp.md](references/openid4vp.md), [references/digital-credentials-api.md](references/digital-credentials-api.md)
+- Verifier requests and request design: [references/verifier-workflows.md](references/verifier-workflows.md), [references/dcql.md](references/dcql.md)
+- Trust, certificates, and secure storage: [references/trust-and-certificates.md](references/trust-and-certificates.md)
+- Platform specifics: [references/android-platform.md](references/android-platform.md), [references/ios-platform.md](references/ios-platform.md)
+- Upgrades and breakage analysis: [references/migration-guide.md](references/migration-guide.md)
+- Failure analysis: [references/troubleshooting.md](references/troubleshooting.md)
+
+## Implementation Guardrails
+
+- For Android NFC, verify the sample path before writing code. The current repository uses Android manifest services such as `samples/testapp/src/androidMain/kotlin/org/multipaz/testapp/TestAppCombinedNfcService.kt` and `TestAppMdocNdefService.kt`.
+- For iOS, use supported alternatives such as QR presentment, BLE-backed proximity, browser or URI-scheme flows, or Identity Document / Digital Credentials integration only after verifying the requested path in the selected version.
+- When the user asks for cross-platform NFC, explain the platform split clearly: Android supported, iOS not currently supported for Multipaz NFC credential presentation.
+- Keep upgrade work separate from feature work unless the user explicitly asked for both.
+
+## Validation
+
+- Run `python3 -B scripts/check_multipaz_dependencies.py [path]`.
+- Run `bash scripts/validate_multipaz_project.sh --dry-run [path]`.
+- For Android NFC work, note that runtime validation usually requires physical hardware.
+- Do not attempt to validate an iOS Multipaz NFC implementation because that workflow is currently unsupported.
+
+## Completion Report
+
+Always include:
+
+- the inspected Multipaz version evidence
+- the modules and source sets used
+- the samples or tests used as implementation anchors
+- the platform-support matrix for the requested workflow
+- the validation commands run and what they proved
+- any unsupported requests, especially iOS NFC presentment

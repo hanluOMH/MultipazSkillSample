@@ -1,0 +1,23 @@
+# Migration Guide
+
+## Use this when
+
+- updating an older Multipaz integration
+- explaining breakage between versions
+- separating feature work from upgrade work
+
+## Rules
+
+- Inspect the currently used Multipaz version first.
+- Prefer version-matched source and samples.
+- Do not upgrade automatically just because a newer version exists.
+- Keep upgrade work isolated from unrelated dependency churn.
+- Re-check platform capability claims after the upgrade, especially around Android-only NFC support.
+
+## Upgrade workflow
+
+1. Inspect current dependencies and target version.
+2. Compare current module names to the current repository module set.
+3. Update only the necessary Multipaz coordinates or project dependencies.
+4. Rebuild Android and iOS targets affected by the change.
+5. Re-run dependency inspection and validation scripts.

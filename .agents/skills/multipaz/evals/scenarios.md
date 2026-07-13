@@ -1,0 +1,201 @@
+# Scenarios
+
+## 1. Inspect an existing KMP project and report whether Multipaz is already configured correctly
+
+- Input task: Inspect this Kotlin Multiplatform wallet project and tell me whether Multipaz is configured correctly.
+- Expected skill behavior: run the inspection script, classify modules and targets, summarize dependency style, and identify missing or suspicious setup.
+- Required inspection steps: inspect Gradle wrapper, versions, targets, source sets, Multipaz dependencies, manifests, plists, and entitlements.
+- Mistakes to avoid: skipping inspection, guessing versions, or assuming Android and iOS feature parity.
+- Evidence of success: a report grounded in actual files and dependencies.
+- Validation expectations: run both inspection scripts.
+
+## 2. Add the minimum dependencies required for a basic holder application
+
+- Input task: Add the minimum Multipaz dependencies for a holder app.
+- Expected skill behavior: choose only core holder modules and match the project's dependency declaration style.
+- Required inspection steps: inspect current dependency style and whether Compose, SwiftUI, or dcapi is already used.
+- Mistakes to avoid: adding verifier, server, or Android-only modules without evidence.
+- Evidence of success: minimal, version-aligned dependency changes.
+- Validation expectations: dependency checker reports no new inconsistencies.
+
+## 3. Create and securely store a locally generated credential
+
+- Input task: Create a local test credential and store it safely.
+- Expected skill behavior: use `DocumentStore`, `SecureArea`, and sample-backed document type setup.
+- Required inspection steps: locate secure-area and document-store patterns in the target project or samples.
+- Mistakes to avoid: storing secrets in plaintext without calling it sample-only.
+- Evidence of success: document creation and storage paths match current APIs.
+- Validation expectations: relevant compile targets pass.
+
+## 4. Add an OpenID4VCI issuance flow
+
+- Input task: Add OpenID4VCI provisioning.
+- Expected skill behavior: choose the wallet-side provisioning path, verify redirect wiring, and keep backend secrets out of app code.
+- Required inspection steps: inspect deep links, app links, current dependencies, and version-compatible OpenID4VCI support.
+- Mistakes to avoid: embedding production keys or inventing backend APIs.
+- Evidence of success: redirect handling and backend integration are grounded in current samples or modules.
+- Validation expectations: dependency inspection plus relevant compile checks.
+
+## 5. Add QR-based credential presentation for Android and iOS where supported
+
+- Input task: Add QR-based presentment for both mobile platforms.
+- Expected skill behavior: use shared presentment logic where supported and platform-specific entry points for Android and iOS.
+- Required inspection steps: verify QR presentment support in the selected version and inspect Android and iOS samples.
+- Mistakes to avoid: claiming QR implies NFC or skipping platform entry points.
+- Evidence of success: Android and iOS implementations cite sample-backed files.
+- Validation expectations: Android compile and iOS compile when available.
+
+## 6. Add NFC credential presentation to an Android application
+
+- Input task: Add Multipaz NFC presentment to Android.
+- Expected skill behavior: wire manifest declarations, APDU services, and Android-only service classes from verified samples.
+- Required inspection steps: inspect Android manifest, NFC service classes, and presentment activity patterns.
+- Mistakes to avoid: placing Android NFC logic in `commonMain`.
+- Evidence of success: Android-specific code only, with manifest support.
+- Validation expectations: Android compile, manifest inspection, and note that hardware runtime testing is still needed.
+
+## 7. Respond correctly when asked to add Multipaz NFC credential presentation to iOS
+
+- Input task: Add Multipaz NFC presentment to iOS.
+- Expected skill behavior: refuse to generate iOS NFC presentment code, explain the limitation, and recommend a verified alternative.
+- Required inspection steps: verify current repository state and inspect iOS-supported alternatives.
+- Mistakes to avoid: adding `CoreNFC`, entitlements, or copied Android logic.
+- Evidence of success: no iOS NFC code is generated.
+- Validation expectations: the response explicitly states that Multipaz NFC credential presentation is currently not supported on iOS.
+
+## 8. Respond correctly when asked to create one shared NFC implementation for Android and iOS
+
+- Input task: Make one shared NFC implementation for both platforms.
+- Expected skill behavior: explain that shared protocol logic may exist, but Multipaz NFC transport and engagement code cannot be shared across Android and iOS as a supported feature today.
+- Required inspection steps: verify Android sample support and iOS lack of supported NFC presentment.
+- Mistakes to avoid: moving NFC transport code into `commonMain`.
+- Evidence of success: platform capability difference is clear and Android-only code stays Android-only.
+- Validation expectations: the answer rejects unsupported shared iOS NFC implementation.
+
+## 9. Add BLE proximity presentation where supported by the current version
+
+- Input task: Add BLE proximity presentment.
+- Expected skill behavior: verify BLE support in the selected version and use sample-backed connection method or transport settings.
+- Required inspection steps: inspect presentment settings and BLE-related manifest or plist usage.
+- Mistakes to avoid: treating BLE as a credential format or assuming it is interchangeable with NFC.
+- Evidence of success: BLE support is version-verified and platform-scoped.
+- Validation expectations: compile relevant targets.
+
+## 10. Add W3C Digital Credentials API presentation
+
+- Input task: Add Digital Credentials API support.
+- Expected skill behavior: choose `multipaz-dcapi` and the proper Android or iOS integration surface.
+- Required inspection steps: inspect current dependencies and platform entry points.
+- Mistakes to avoid: conflating Android credential manager with iOS Identity Document provider details.
+- Evidence of success: platform-specific registration and shared document logic are separated.
+- Validation expectations: relevant compile targets pass.
+
+## 11. Create a verifier request using DCQL
+
+- Input task: Create a DCQL verifier request.
+- Expected skill behavior: build from sample-backed request formats and current document types.
+- Required inspection steps: inspect DCQL examples and requested credential format.
+- Mistakes to avoid: inventing request fields or confusing protocol and transport.
+- Evidence of success: request structure matches sample-backed current behavior.
+- Validation expectations: request is grounded in current examples.
+
+## 12. Diagnose an Android NFC declaration or lifecycle problem
+
+- Input task: Diagnose why Android NFC presentment is not starting.
+- Expected skill behavior: inspect manifest declarations, service registration, and lifecycle hooks.
+- Required inspection steps: check `android.permission.NFC`, `android.hardware.nfc`, `BIND_NFC_SERVICE`, and NFC adapter setup.
+- Mistakes to avoid: generic Android NFC advice unrelated to Multipaz.
+- Evidence of success: diagnosis cites the concrete missing or incorrect file entries.
+- Validation expectations: Android compile and manifest review.
+
+## 13. Diagnose an iOS entitlement or framework problem for a supported iOS feature
+
+- Input task: Fix an iOS Identity Document or QR presentment integration issue.
+- Expected skill behavior: focus on supported iOS features such as QR or Identity Document integration.
+- Required inspection steps: inspect plist, entitlements, extension registration, and Swift wiring.
+- Mistakes to avoid: pivoting the diagnosis into unsupported iOS NFC presentment.
+- Evidence of success: fix is grounded in supported iOS code paths.
+- Validation expectations: iOS compile when tooling is available.
+
+## 14. Diagnose a Multipaz version and sample mismatch
+
+- Input task: This project copied code from a newer sample and now fails.
+- Expected skill behavior: identify version mismatch and separate upgrade decisions from implementation fixes.
+- Required inspection steps: inspect current Multipaz version, current APIs, and sample provenance.
+- Mistakes to avoid: silently upgrading all dependencies.
+- Evidence of success: mismatch is explained with specific version evidence.
+- Validation expectations: dependency checker or build output supports the conclusion.
+
+## 15. Explain and repair a certificate trust-chain configuration problem
+
+- Input task: The verifier parses the request but trust verification fails.
+- Expected skill behavior: distinguish parsing from trust and inspect trust anchors, signer chain, and metadata.
+- Required inspection steps: inspect trust-manager usage and certificate construction flow.
+- Mistakes to avoid: treating successful parsing as trust.
+- Evidence of success: trust-chain defect and repair path are explicit.
+- Validation expectations: compile and, when available, relevant tests.
+
+## 16. Upgrade an older project to the current Multipaz version without upgrading unrelated dependencies
+
+- Input task: Upgrade this wallet to the current Multipaz release only.
+- Expected skill behavior: inspect current dependency state, update only Multipaz dependencies, explain breakage, and validate affected targets.
+- Required inspection steps: version inspection, dependency scan, sample comparison, and platform impact review.
+- Mistakes to avoid: upgrading Kotlin, AGP, Compose, or unrelated libraries without cause.
+- Evidence of success: only relevant dependencies change.
+- Validation expectations: dependency check and targeted builds pass.
+
+## 17. Identify insecure sample configuration and propose production-safe changes
+
+- Input task: Review this sample integration for production risks.
+- Expected skill behavior: flag embedded keys, plaintext storage, disabled trust, or verbose sensitive logging.
+- Required inspection steps: inspect provisioning support, secure-area usage, and logging.
+- Mistakes to avoid: approving sample shortcuts as production-safe.
+- Evidence of success: findings are specific and actionable.
+- Validation expectations: no new insecure defaults introduced.
+
+## 18. Explain which code belongs in `commonMain`, `androidMain`, and iOS source sets
+
+- Input task: Help me split this Multipaz code across source sets.
+- Expected skill behavior: place document and protocol logic in shared code when supported, and platform wiring in platform source sets.
+- Required inspection steps: inspect API usage and platform imports.
+- Mistakes to avoid: broad claims that everything in a holder flow is shared.
+- Evidence of success: source-set split maps to current APIs.
+- Validation expectations: compile affected targets.
+
+## 19. Detect Android-only NFC code that was incorrectly placed in `commonMain`
+
+- Input task: Find Android-only NFC code in shared code.
+- Expected skill behavior: run the dependency checker and flag Android-only markers in shared or iOS source sets.
+- Required inspection steps: scan `commonMain` and iOS sources for Android-specific imports and presentment classes.
+- Mistakes to avoid: missing `PresentmentActivity`, Android manifest assumptions, or APDU services.
+- Evidence of success: flagged files and markers are concrete.
+- Validation expectations: checker output contains the evidence.
+
+## 20. Recommend supported iOS alternatives when a developer asks for NFC presentation
+
+- Input task: I need iOS NFC, what should I do instead?
+- Expected skill behavior: explain the unsupported status and recommend only version-verified alternatives such as QR, BLE-backed flows, browser, or Identity Document integration.
+- Required inspection steps: inspect current repo support and selected app architecture.
+- Mistakes to avoid: recommending every alternative without checking availability.
+- Evidence of success: the alternative path is explicitly verified against the current version.
+- Validation expectations: response preserves the Android-only NFC boundary.
+
+## Required NFC Evaluation Behavior
+
+Scenario: Add Multipaz NFC credential presentation to both Android and iOS.
+
+- Expected behavior:
+1. Inspect the Multipaz version and repository.
+2. Explain that NFC presentation is currently supported only on Android.
+3. Implement or propose the Android NFC portion using verified APIs and samples.
+4. Do not generate iOS NFC implementation code.
+5. Recommend a verified alternative for iOS.
+6. Keep shared credential and protocol logic in common code only where appropriate.
+7. Keep NFC transport or engagement logic in `androidMain`.
+8. Clearly report the resulting platform capability difference.
+- Failure conditions:
+- claims iOS NFC support exists
+- generates iOS NFC presentation code
+- adds iOS NFC entitlements for the unsupported flow
+- copies Android NFC code into `commonMain`
+- implies Android and iOS have equivalent NFC support
