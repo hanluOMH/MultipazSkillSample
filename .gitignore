@@ -1,27 +1,46 @@
+# Built application files
+*.apk
+*.aar
+*.ap_
+*.aab
+
+# Files for the ART/Dalvik VM
+*.dex
+
+# Java class files
+*.class
+
+# Generated files
+bin/
+gen/
+out/
+
 # Gradle files
 .gradle/
 build/
+!gradle/wrapper/gradle-wrapper.jar
+
+# Kotlin
+.kotlin/
 
 # Local configuration file (sdk path, etc)
 local.properties
 
 # Log/OS Files
 *.log
+.DS_Store
+**/.DS_Store
 
-# Android Studio generated files and folders
+# Android Studio / IntelliJ
 captures/
 .externalNativeBuild/
 .cxx/
-*.aab
-*.apk
-output-metadata.json
-
-# IntelliJ
 *.iml
 .idea/
 misc.xml
 deploymentTargetDropDown.xml
 render.experimental.xml
+*.hprof
 
 # Keystore files
 *.jks
@@ -30,5 +49,34 @@ render.experimental.xml
 # Google Services (e.g. APIs or Firebase)
 google-services.json
 
-# Android Profiling
-*.hprof
+# Xcode / iOS
+**/xcuserdata/
+**/*.xcuserstate
+**/DerivedData/
+**/Pods/
+**/.swiftpm/
+**/build/
+*.moved-aside
+*.pbxuser
+!default.pbxuser
+*.mode1v3
+!default.mode1v3
+*.mode2v3
+!default.mode2v3
+*.perspectivev3
+!default.perspectivev3
+*.hmap
+*.ipa
+*.dSYM.zip
+*.dSYM
+timeline.xctimeline
+playground.xcworkspace
+
+# CocoaPods
+Pods/
+
+# fastlane
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots
+fastlane/test_output
