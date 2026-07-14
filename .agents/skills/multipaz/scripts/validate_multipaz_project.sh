@@ -104,6 +104,12 @@ else
   if contains_module "samples:testapp"; then
     run_or_print "$PROJECT_PATH/gradlew" -p "$PROJECT_PATH" :samples:testapp:assembleDebug
   fi
+  if contains_module "androidApp"; then
+    run_or_print "$PROJECT_PATH/gradlew" -p "$PROJECT_PATH" :androidApp:assembleDebug
+  fi
+  if contains_module "shared"; then
+    run_or_print "$PROJECT_PATH/gradlew" -p "$PROJECT_PATH" :shared:compileKotlinIosSimulatorArm64
+  fi
   if contains_module "multipaz-compose"; then
     run_or_print "$PROJECT_PATH/gradlew" -p "$PROJECT_PATH" :multipaz-compose:assemble
   fi

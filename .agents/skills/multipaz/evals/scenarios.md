@@ -22,19 +22,19 @@
 
 - Input task: Create a local test credential and store it safely.
 - Expected skill behavior: use `DocumentStore`, `SecureArea`, and sample-backed document type setup.
-- Required inspection steps: locate secure-area and document-store patterns in the target project or samples.
+- Required inspection steps: locate secure-area and document-store patterns in the target project or samples; identify which pieces belong in `commonMain`, Android startup, and platform redirect handlers.
 - Mistakes to avoid: storing secrets in plaintext without calling it sample-only.
 - Evidence of success: document creation and storage paths match current APIs.
-- Validation expectations: relevant compile targets pass.
+- Validation expectations: relevant compile targets pass; automated tests or a platform smoke test verify document creation, listing/loading, and credential count when practical.
 
 ## 4. Add an OpenID4VCI issuance flow
 
 - Input task: Add OpenID4VCI provisioning.
-- Expected skill behavior: choose the wallet-side provisioning path, verify redirect wiring, and keep backend secrets out of app code.
+- Expected skill behavior: choose the wallet-side provisioning path, verify redirect wiring, add platform Ktor client engines when constructing `HttpClient`, initialize Android Multipaz application context, add internet permission, handle OAuth redirects, and keep backend secrets out of app code.
 - Required inspection steps: inspect deep links, app links, current dependencies, and version-compatible OpenID4VCI support.
-- Mistakes to avoid: embedding production keys or inventing backend APIs.
+- Mistakes to avoid: embedding production keys, inventing backend APIs, adding the server-oriented OpenID4VCI artifact to a mobile holder without sample evidence, leaving `HttpClient()` without a platform engine, or using unregistered generated wallet attestation keys against a public issuer.
 - Evidence of success: redirect handling and backend integration are grounded in current samples or modules.
-- Validation expectations: dependency inspection plus relevant compile checks.
+- Validation expectations: dependency inspection, targeted app/shared compile checks, and a runtime launch or explicit engine-classpath check when possible. For a real issuer, verify offer receipt, browser authorization, redirect return, and document-store insertion.
 
 ## 5. Add QR-based credential presentation for Android and iOS where supported
 

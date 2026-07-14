@@ -10,7 +10,7 @@ Use this skill when the task is about integrating, upgrading, debugging, or vali
 ## Rules
 
 - Treat the current repository as the primary source of truth. Prefer current code, tests, samples, and build files over prose documentation.
-- Inspect the target project before editing it. Run `python3 -B scripts/inspect_multipaz_project.py` first unless the task is purely explanatory and already scoped to a known file.
+- Inspect the target project before editing it. From a repo root containing this skill, run `python3 -B .agents/skills/multipaz/scripts/inspect_multipaz_project.py .` first unless the task is purely explanatory and already scoped to a known file. If you are executing from inside the skill directory, use the shorter `scripts/...` paths.
 - Check version compatibility before generating code. Do not silently upgrade Multipaz or unrelated dependencies.
 - Keep Android-only code in `androidMain` or Android app modules. Keep iOS-only code in `iosMain` or native Swift code. Keep shared logic in `commonMain` only when the APIs are actually multiplatform.
 - Multipaz NFC credential presentation is currently Android-only. Never generate iOS NFC presentation code, never claim feature parity, and never tell the user to add iOS NFC entitlements for a Multipaz NFC presentment flow.
@@ -21,7 +21,7 @@ Use this skill when the task is about integrating, upgrading, debugging, or vali
 ## Workflow
 
 1. Inspect the project.
-   Run `python3 -B scripts/inspect_multipaz_project.py [path]` and read [references/project-inspection.md](references/project-inspection.md) plus [references/dependency-guide.md](references/dependency-guide.md).
+   Run `python3 -B .agents/skills/multipaz/scripts/inspect_multipaz_project.py [path]` from the target repo root, or `python3 -B scripts/inspect_multipaz_project.py [path]` from this skill directory. Then read [references/project-inspection.md](references/project-inspection.md) plus [references/dependency-guide.md](references/dependency-guide.md).
 2. Classify the work.
    Decide whether the task is setup, issuance, storage, presentment, verification, verifier request construction, server integration, migration, or troubleshooting.
 3. Load only the relevant references.
@@ -31,8 +31,10 @@ Use this skill when the task is about integrating, upgrading, debugging, or vali
 5. Respect source-set and platform boundaries.
    Shared document logic can live in `commonMain`; Android NFC services and manifest wiring must stay Android-specific; iOS wallet or Digital Credentials work must follow the supported Swift or `iosMain` paths.
 6. Implement with validation in mind.
-   Add the smallest necessary dependency and code change, then run `python3 -B scripts/check_multipaz_dependencies.py` and `bash scripts/validate_multipaz_project.sh --dry-run`.
-7. Report completion.
+   Add the smallest necessary dependency and code change, then run `python3 -B .agents/skills/multipaz/scripts/check_multipaz_dependencies.py .` and `bash .agents/skills/multipaz/scripts/validate_multipaz_project.sh --dry-run .` from the repo root.
+7. For OpenID4VCI holder work, verify the complete platform handoff.
+   Do not stop at parsing an offer. Confirm app initialization, transport, trusted wallet attestation, OAuth/browser authorization, redirect capture, and document-store insertion. Read [references/openid4vci.md](references/openid4vci.md).
+8. Report completion.
    State the Multipaz version evidence you used, modules changed, platform capability boundaries, validation run, and any unsupported or deferred work.
 
 ## Reference Routing
@@ -53,12 +55,18 @@ Use this skill when the task is about integrating, upgrading, debugging, or vali
 - For Android NFC, verify the sample path before writing code. The current repository uses Android manifest services such as `samples/testapp/src/androidMain/kotlin/org/multipaz/testapp/TestAppCombinedNfcService.kt` and `TestAppMdocNdefService.kt`.
 - For iOS, use supported alternatives such as QR presentment, BLE-backed proximity, browser or URI-scheme flows, or Identity Document / Digital Credentials integration only after verifying the requested path in the selected version.
 - When the user asks for cross-platform NFC, explain the platform split clearly: Android supported, iOS not currently supported for Multipaz NFC credential presentation.
+- For Android OpenID4VCI, initialize Multipaz with the Android application context before using `Platform` storage or secure areas, add network permission for real issuers, and wire both the credential-offer scheme and the OAuth redirect scheme.
+- For public/demo issuers, do not assume locally generated attestation keys are trusted. Use version-matched sample test keys only for demos, a registered wallet backend for real integrations, or a local issuer configured to trust test keys.
 - Keep upgrade work separate from feature work unless the user explicitly asked for both.
 
 ## Validation
 
 - Run `python3 -B scripts/check_multipaz_dependencies.py [path]`.
-- Run `bash scripts/validate_multipaz_project.sh --dry-run [path]`.
+- Run `python3 -B .agents/skills/multipaz/scripts/check_multipaz_dependencies.py [path]` from the repo root, or `python3 -B scripts/check_multipaz_dependencies.py [path]` from this skill directory.
+- Run `bash .agents/skills/multipaz/scripts/validate_multipaz_project.sh --dry-run [path]` from the repo root, or `bash scripts/validate_multipaz_project.sh --dry-run [path]` from this skill directory.
+- For a KMP app with `androidApp` and `shared` modules, prefer targeted build checks such as `./gradlew :androidApp:assembleDebug :shared:compileKotlinIosSimulatorArm64` in addition to the generic validation script.
+- For OpenID4VCI or other holder flows that construct `HttpClient`, verify platform Ktor client engines are declared and, when possible, run an Android or iOS launch smoke test. Compile can pass while `HttpClient()` still fails at runtime without an engine.
+- For Android OpenID4VCI real-issuer testing, verify the offer fills the app, tapping issue opens browser authorization when required, the issuer redirects back into the app, and the issued credential appears in the document store.
 - For Android NFC work, note that runtime validation usually requires physical hardware.
 - Do not attempt to validate an iOS Multipaz NFC implementation because that workflow is currently unsupported.
 
