@@ -25,6 +25,7 @@
 - On Android, call `org.multipaz.context.initializeApplication(applicationContext)` before using `Platform.storage`, `Platform.nonBackedUpStorage`, or `Platform.getSecureArea()`.
 - Add `android.permission.INTERNET` before testing any real issuer.
 - Authorization-code offers must open the OAuth authorization URL and feed the custom-scheme/app-link redirect back through `ProvisioningModel.provideAuthorizationResponse(AuthorizationResponse.OAuth(...))`.
+- On iOS, browser-launched offer links require both `CFBundleURLTypes` registration for the offer scheme and a SwiftUI/UIKit URL callback that forwards the full URL string into the shared holder flow. Authorization-code challenges also require opening the OAuth URL and routing the redirect URL back to the suspended provisioning model by matching `state`. Android intent filters do not imply any iOS routing.
 - Public Multipaz issuers reject arbitrary generated wallet attestations. Use a registered wallet backend, the version-matched sample test keys, or a locally configured issuer that trusts your test keys.
 - Treat local or embedded backend keys as sample-only.
 - Separate backend responsibilities from app code unless the task explicitly targets a local test stub.
@@ -47,4 +48,5 @@ Before declaring an Android OpenID4VCI holder flow complete, verify:
 - Confirm the app accepts the expected offer URI schemes or HTTPS redirects.
 - Verify platform Ktor engine dependencies are present before calling the flow complete. If possible, launch the Android app or iOS target enough to instantiate the OpenID4VCI holder path.
 - For Android real-issuer tests, verify all of these on device: wallet storage initializes, the offer link fills the app, `Issue from offer` opens the browser, the issuer redirects back to the app, and a document appears in `DocumentStore`.
+- For iOS real-issuer tests, verify the issuer website opens the app from Safari, the full `openid-credential-offer://...` URL reaches shared code, `Issue from offer` opens the OAuth authorization URL when required, and the OAuth redirect scheme is registered and handled.
 - Verify secure-area and storage setup before debugging provisioning failures.

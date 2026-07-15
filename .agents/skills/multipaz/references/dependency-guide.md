@@ -28,6 +28,7 @@
 
 - Add only the modules needed for the requested workflow.
 - Keep versions aligned across all `org.multipaz:*` coordinates in consumer projects.
+- For Compose holder QR presentment, add `org.multipaz:multipaz-compose` alongside `org.multipaz:multipaz`; keep the version aligned and verify the Android artifact's manifest/minSdk requirements.
 - If shared holder code creates a Ktor `HttpClient`, add platform engine dependencies such as `io.ktor:ktor-client-android` for Android and `io.ktor:ktor-client-darwin` for iOS. Prefer explicit platform factories over bare `HttpClient()` so missing engines are caught during compilation.
 - Do not replace project dependencies with Maven artifacts inside this repository.
 - Do not upgrade unrelated Kotlin, AGP, Compose, or iOS toolchain versions unless the task explicitly includes upgrade work.

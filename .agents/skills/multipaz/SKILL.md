@@ -34,7 +34,9 @@ Use this skill when the task is about integrating, upgrading, debugging, or vali
    Add the smallest necessary dependency and code change, then run `python3 -B .agents/skills/multipaz/scripts/check_multipaz_dependencies.py .` and `bash .agents/skills/multipaz/scripts/validate_multipaz_project.sh --dry-run .` from the repo root.
 7. For OpenID4VCI holder work, verify the complete platform handoff.
    Do not stop at parsing an offer. Confirm app initialization, transport, trusted wallet attestation, OAuth/browser authorization, redirect capture, and document-store insertion. Read [references/openid4vci.md](references/openid4vci.md).
-8. Report completion.
+8. For iOS browser-launched OpenID4VCI offers, verify both URL scheme registration and the SwiftUI/UIKit URL callback into shared code.
+   Read [references/ios-platform.md](references/ios-platform.md).
+9. Report completion.
    State the Multipaz version evidence you used, modules changed, platform capability boundaries, validation run, and any unsupported or deferred work.
 
 ## Reference Routing
@@ -56,6 +58,7 @@ Use this skill when the task is about integrating, upgrading, debugging, or vali
 - For iOS, use supported alternatives such as QR presentment, BLE-backed proximity, browser or URI-scheme flows, or Identity Document / Digital Credentials integration only after verifying the requested path in the selected version.
 - When the user asks for cross-platform NFC, explain the platform split clearly: Android supported, iOS not currently supported for Multipaz NFC credential presentation.
 - For Android OpenID4VCI, initialize Multipaz with the Android application context before using `Platform` storage or secure areas, add network permission for real issuers, and wire both the credential-offer scheme and the OAuth redirect scheme.
+- For iOS OpenID4VCI links from Safari or an issuer website, register the offer and redirect schemes in `Info.plist`, forward opened URLs through `.onOpenURL` or an equivalent UIKit callback, and wire OAuth challenges so `Issue from offer` opens the authorization URL and resumes provisioning from the redirect matched by `state`.
 - For public/demo issuers, do not assume locally generated attestation keys are trusted. Use version-matched sample test keys only for demos, a registered wallet backend for real integrations, or a local issuer configured to trust test keys.
 - Keep upgrade work separate from feature work unless the user explicitly asked for both.
 

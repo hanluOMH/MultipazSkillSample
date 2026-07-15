@@ -40,3 +40,15 @@ Do not collapse these into one concept.
 4. Keep shared document and consent logic in common code.
 5. Keep Android NFC services, manifest, and lifecycle integration in Android code.
 6. Keep iOS to supported alternatives such as QR, BLE-backed flows, browser, or Identity Document services.
+
+## QR over BLE implementation notes
+
+- `MdocProximityQrPresentment` creates the ephemeral device key, advertises the configured transports, encodes the `mdoc:` QR engagement, waits for the reader connection, and calls `Iso18013Presentment`.
+- Gate QR generation on BLE readiness. In Compose apps using `multipaz-compose`, call `rememberBluetoothPermissionState()` and `rememberBluetoothEnabledState()` and show explicit actions to request permissions and enable Bluetooth before rendering the `MdocProximityQrPresentment` start button.
+- Wire presentment consent using `Platform.promptModel` and `PromptDialogs(promptModel)`. On Android, use a `FragmentActivity`; otherwise `PresentmentActivity` may open and immediately cancel after the verifier request arrives.
+- A typical holder QR setup advertises BLE using `MdocConnectionMethodBle(supportsPeripheralServerMode = true, supportsCentralClientMode = false, peripheralServerModeUuid = UUID.randomUUID(), centralClientModeUuid = null)`.
+- For verifier compatibility, consider advertising both BLE roles using the same fresh UUID: one `MdocConnectionMethodBle` with central-client mode enabled and one with peripheral-server mode enabled.
+- Enable L2CAP when both sides support it with `MdocTransportOptions(bleUseL2CAP = true, bleUseL2CAPInEngagement = true)`, but keep GATT fallback expectations in mind for verifier compatibility.
+- Each generated QR should represent a fresh engagement/session. Avoid reusing old QR payloads after cancellation, completion, or timeout.
+- QR display success is not end-to-end success. Evidence must include reader connection, holder consent, response transmission, and verifier-side validation.
+- If the verifier connects but the holder reports `Error satisfying the request`, inspect whether the `DocumentStore` contains a matching `MdocCredential` for the requested `docType` and requested claims. A credential can match the docType but still lack requested claims. Compare against the Getting Started sample pattern: seed a local sample mDL and do not over-constrain QR presentment with incompatible preselected documents.
