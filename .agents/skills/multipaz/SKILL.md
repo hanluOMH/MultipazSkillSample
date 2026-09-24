@@ -3,7 +3,7 @@ name: multipaz
 license: Apache-2.0
 compatibility: Content verified against Multipaz upstream commit e4b1d4381be562064a284dc0278899f5313eba58 (2026-09-17), which is 15 commits ahead of release 0.101.0. Confirm the target project's resolved Multipaz version against that baseline before reusing pinned paths or APIs.
 metadata:
-  version: "1.0.0"
+  version: "1.0.1"
 description: Use this skill for Multipaz, ISO mdoc or mDL, OpenID4VCI, OpenID4VP, DCQL, W3C Digital Credentials API, credential holder, verifier, issuer, QR presentation, BLE presentation, Android NFC credential presentation, Kotlin Multiplatform wallet, or Swift and Compose integration work built on the Multipaz repository or released modules. Apply it when a task needs module selection, version-aware implementation, project inspection, platform integration, troubleshooting, or migration for Multipaz. Do not use it for unrelated Kotlin work. Never claim that Multipaz NFC credential presentation works on iOS.
 ---
 

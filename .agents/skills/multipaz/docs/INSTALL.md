@@ -6,18 +6,70 @@ the whole directory and nothing else. Do not ship the sample Android/KMP project
 this skill was developed in; it is a scratch project with no Multipaz dependency.
 
 Install and packaging notes live under `docs/` rather than in a root `README.md`
-on purpose — see the catalog rules below, where a root-level Markdown file can be
-misinterpreted as a skill.
+on purpose — see the OpenCode V2 HTTP catalog rules below, where a root-level
+Markdown file can be misinterpreted as a skill. That restriction is specific to
+that catalog format, not to `vercel-labs/skills`.
 
 ## Skill identity
 
-- ID: `multipaz`, derived from the directory/file name, never from frontmatter.
-- Display name, description, and license: frontmatter in `SKILL.md`.
+- For `vercel-labs/skills`, the skill name is `multipaz`, declared by the `name`
+  field in the YAML frontmatter of `SKILL.md`; `description` is also required.
+- Description and license: frontmatter in `SKILL.md`.
 - Version and upstream pin: `metadata.version` and `compatibility` in `SKILL.md`,
   explained in `references/upstream-source.md`. Bump `metadata.version` whenever
   any file in this directory changes.
 
-## Install (OpenCode V2 filesystem sources)
+## Install with vercel-labs/skills
+
+Requires Node.js and npm (`npx`) on the consumer's computer. Run these commands
+from the project where you want to use the skill; cloning this sample repository
+first is not required.
+
+```bash
+# Discover the skills available in this repository.
+npx skills add hanluOMH/MultipazSkillSample --list
+
+# Install multipaz and interactively select the target agents.
+npx skills add hanluOMH/MultipazSkillSample --skill multipaz
+
+# Or install directly for Codex in the current project.
+npx skills add hanluOMH/MultipazSkillSample --skill multipaz --agent codex
+```
+
+The repository shorthand uses the default branch (currently `developer`). To
+explicitly select that branch:
+
+```bash
+npx skills add https://github.com/hanluOMH/MultipazSkillSample/tree/developer --skill multipaz --agent codex
+```
+
+The CLI discovers `.agents/skills/multipaz/SKILL.md` and installs the skill with
+its supporting resources. Keep that entry file named `SKILL.md`; do not rename
+it to `multipaz.md` for this workflow. No npm package, HTTP catalog, or plugin
+manifest is needed in the source repository.
+
+Installation is project-scoped by default; add `--global` for user-wide
+installation. Use `--agent` to select another supported agent, or omit it for
+interactive selection. For Codex, the project destination is
+`.agents/skills/multipaz/`.
+
+```bash
+npx skills list
+npx skills update multipaz
+npx skills remove multipaz
+```
+
+See the [vercel-labs/skills documentation](https://github.com/vercel-labs/skills)
+for supported agents and command options.
+
+## OpenCode V2-specific distribution
+
+The filesystem identity, precedence, and HTTP catalog rules in this section
+apply only to the OpenCode V2 distribution described here. They are not
+`vercel-labs/skills` requirements. In this OpenCode V2 workflow, the ID
+`multipaz` is derived from the directory/file name rather than frontmatter.
+
+### Install (OpenCode V2 filesystem sources)
 
 | Target | Scope | Notes |
 | --- | --- | --- |
@@ -30,7 +82,7 @@ Precedence, lowest to highest: built-in skills → `.claude/skills` → `.agents
 config entries. Sources with the same ID shadow each other silently, so keep one
 copy per scope you intend to override, and tell consumers which path you expect.
 
-## Publish as an HTTP catalog
+### Publish as an OpenCode V2 HTTP catalog
 
 Serve an `index.json` at a base URL:
 
@@ -39,7 +91,7 @@ Serve an `index.json` at a base URL:
   "skills": [
     {
       "name": "multipaz",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "files": [
         "multipaz.md",
         "references/architecture.md",
@@ -51,9 +103,10 @@ Serve an `index.json` at a base URL:
 }
 ```
 
-Rules that matter for this skill:
+Rules for this OpenCode V2 HTTP catalog only:
 
-- Publish the entry file as `multipaz.md`, not `SKILL.md`. Each downloaded skill
+- In the HTTP catalog output, publish the entry file as `multipaz.md`, not
+  `SKILL.md`; keep the repository entry file as `SKILL.md`. Each downloaded skill
   directory becomes a source root, and a root-level `SKILL.md` currently gets the
   literal ID `SKILL` in V2, which would collide with every other skill in the
   catalog.
